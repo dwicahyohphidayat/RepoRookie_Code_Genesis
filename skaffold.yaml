@@ -38,7 +38,10 @@ build:
         secretName: docker-registry-secret
     volumeMounts:
     - name: kaniko-secret
-      mountPath: /kaniko/.docker                
+      mountPath: /kaniko/.docker
+    env:
+    - name: DOCKER_CONFIG
+      value: /kaniko/.docker/        
 #    namespace: test  # Specify the namespace if needed
 #    pullSecretName: my-pull-secret  # Specify the pull secret if needed
 #    serviceAccount: my-service-account  # Specify the service account if needed

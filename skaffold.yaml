@@ -4,6 +4,9 @@ build:
   artifacts:
     - image: aitops/tools
       kaniko:
+        buildContext:
+          localDir: {}
+        cache: {}        
         dockerfile: Dockerfile
   tagPolicy:
     gitCommit:

@@ -11,14 +11,6 @@ build:
     gitCommit:
       prefix: test-
   cluster:
-    podSpec:
-      terminationGracePeriodSeconds: 300
-      containers:
-      - name: kaniko
-        lifecycle:
-          preStop:
-            exec:
-              command: ["sh", "-c", "sleep 300"]
     tolerations:
     - key: virtual-kubelet.io/provider
       operator: Equal
@@ -38,12 +30,12 @@ build:
     - name: kaniko-secret
       secret:
         secretName: docker-registry-secret
-    volumeMounts:
-    - name: kaniko-secret
-      mountPath: /kaniko/.docker
     env:
     - name: DOCKER_CONFIG
-      value: /kaniko/.docker/        
+      value: /kaniko/.docker/
+    volumeMounts:
+    - name: kaniko-secret
+      mountPath: /kaniko/.docker          
 manifests:
   rawYaml:
     - ./k8s/*

@@ -17,6 +17,8 @@ build:
         localDir: {}
       dockerfile: Dockerfile
   cluster:
+    podSpec:
+      terminationGracePeriodSeconds: 60    
     tolerations:
     - key: virtual-kubelet.io/provider
       operator: Equal

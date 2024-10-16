@@ -11,6 +11,7 @@ build:
     gitCommit:
       prefix: test-
   cluster:
+    pullSecretName: kaniko-registry-secret
     dockerConfig:
       secretName: kaniko-registry-secret
     tolerations:

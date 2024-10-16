@@ -1,7 +1,5 @@
 apiVersion: skaffold/v4beta11
 kind: Config
-metadata:
-  name: reporookie
 build:
   artifacts:
     - image: aitops/tools
@@ -11,7 +9,6 @@ build:
     gitCommit:
       prefix: test-
   cluster:
-    pullSecretName: kaniko-registry-secret
     dockerConfig:
       secretName: kaniko-registry-secret
     tolerations:

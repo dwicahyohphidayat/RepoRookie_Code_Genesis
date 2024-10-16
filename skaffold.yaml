@@ -12,7 +12,7 @@ build:
       prefix: test-
   cluster:
     dockerConfig:
-      secretName: docker-registry-secret
+      secretName: kaniko-registry-secret
     tolerations:
     - key: virtual-kubelet.io/provider
       operator: Equal

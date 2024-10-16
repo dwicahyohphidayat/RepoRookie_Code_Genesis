@@ -7,6 +7,7 @@ build:
     - image: aitops/tools
       kaniko:
         dockerfile: Dockerfile
+        pullSecretName: docker-registry-secret
   tagPolicy:
     gitCommit:
       prefix: test-
@@ -26,16 +27,6 @@ build:
               values:
               - virtual-kubelet-ap-southeast-5a
               - virtual-kubelet-ap-southeast-5b
-    volumes:
-    - name: kaniko-secret
-      secret:
-        secretName: docker-registry-secret
-    env:
-    - name: DOCKER_CONFIG
-      value: /kaniko/.docker/
-    volumeMounts:
-    - name: kaniko-secret
-      mountPath: /kaniko/.docker          
 manifests:
   rawYaml:
     - ./k8s/*

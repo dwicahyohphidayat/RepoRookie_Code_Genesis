@@ -7,11 +7,12 @@ build:
     - image: aitops/tools
       kaniko:
         dockerfile: Dockerfile
-        pullSecretName: docker-registry-secret
   tagPolicy:
     gitCommit:
       prefix: test-
   cluster:
+    dockerConfig:
+      secretName: docker-registry-secret
     tolerations:
     - key: virtual-kubelet.io/provider
       operator: Equal

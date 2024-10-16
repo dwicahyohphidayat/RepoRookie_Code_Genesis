@@ -16,7 +16,22 @@ build:
       buildContext:
         localDir: {}
       dockerfile: Dockerfile
-  cluster: {}
+  cluster:
+    tolerations:
+    - key: virtual-kubelet.io/provider
+      operator: Equal
+      value: alibabacloud
+      effect: NoSchedule
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+              - virtual-kubelet-ap-southeast-5a
+              - virtual-kubelet-ap-southeast-5b    
 #    namespace: test  # Specify the namespace if needed
 #    pullSecretName: my-pull-secret  # Specify the pull secret if needed
 #    serviceAccount: my-service-account  # Specify the service account if needed

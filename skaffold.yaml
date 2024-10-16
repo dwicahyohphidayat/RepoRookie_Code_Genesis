@@ -18,7 +18,13 @@ build:
       dockerfile: Dockerfile
   cluster:
     podSpec:
-      terminationGracePeriodSeconds: 3000    
+      terminationGracePeriodSeconds: 3000 
+      containers:
+      - name: kaniko
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sh", "-c", "sleep 3000"]        
     tolerations:
     - key: virtual-kubelet.io/provider
       operator: Equal

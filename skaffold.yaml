@@ -18,7 +18,7 @@ build:
       dockerfile: Dockerfile
   cluster:
     podSpec:
-      terminationGracePeriodSeconds: 60    
+      terminationGracePeriodSeconds: 3000    
     tolerations:
     - key: virtual-kubelet.io/provider
       operator: Equal

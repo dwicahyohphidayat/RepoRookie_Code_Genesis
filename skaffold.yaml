@@ -10,30 +10,17 @@ build:
         dockerfile: Dockerfile
         logStreaming:
           enabled: true
-        nodeSelector:
-          kubernetes.io/hostname:
-            - virtual-kubelet-ap-southeast-5a
-            - virtual-kubelet-ap-southeast-5b            
-        resources:
-          requests:
-            cpu: "250m"
-            memory: "256Mi"          
-          limits:
-            cpu: "1000m"
-            memory: "1024Mi" 
-        tolerations:
-        - key: virtual-kubelet.io/provider
-          operator: Equal
-          value: alibabacloud
-          effect: NoSchedule
-  cluster:
-    dockerConfig:
-      secretName: kaniko-registry-secret
+        podTemplate: ./k8s/pod-template/kaniko.yaml
+  cluster: {}
   tagPolicy:
     gitCommit:
       prefix: test-
 deploy:
-  kubectl: {}
+  kubectl:
+    logPrefix: kubectl
+    logs:
+      - container: kaniko
+        driver: kubectl    
 manifests:
   rawYaml:
-    - ./k8s/*
+    - ./k8s/dev/*

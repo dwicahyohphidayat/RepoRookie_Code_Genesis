@@ -1,3 +1,4 @@
+// vars/akarintiPipeline.groovy
 def call(Map config) {
     // Validate required parameters
     if (!config.branch) {
@@ -31,7 +32,30 @@ def call(Map config) {
                     }
                 }
             }
+            // Conditional Unit Test Stage
+            stage('Unit Test') {
+                when {
+                    expression { config.tests?.unit?.enable == 'yes' }
+                }
+                steps {
+                    script {
+                        def testHelper = new org.foo.TestHelper(this)
+                        testHelper.runUnitTests(config.tests.unit.framework)
+                    }
+                }
+            }
+            // Conditional Integration Test Stage
+            stage('Integration Test') {
+                when {
+                    expression { config.tests?.integration?.enable == 'yes' }
+                }
+                steps {
+                    script {
+                        def testHelper = new org.foo.TestHelper(this)
+                        testHelper.runIntegrationTests(config.tests.integration.framework)
+                    }
+                }
+            }
         }
     }
 }
-

@@ -9,16 +9,22 @@ def call(Map config) {
 
     echo "Running AkarintiPipeline with config: ${config}"
 
-    stage('Checkout') {
-        container('jnlp') {
-            checkout([$class: 'GitSCM', branches: [[name: "*/${config.branch}"]], userRemoteConfigs: [[url: "${config.repo}"]]])
+    // Checkout stage
+    script {
+        stage('Checkout') {
+            container('jnlp') {
+                checkout([$class: 'GitSCM', branches: [[name: "*/${config.branch}"]], userRemoteConfigs: [[url: "${config.repo}"]]])
+            }
         }
     }
 
-    stage('Build') {
-        echo "Building project branch: ${config.branch}"
-        container('jnlp') {
-            sh 'skaffold run -vdebug -n test --tail'
+    // Build stage
+    script {
+        stage('Build') {
+            echo "Building project branch: ${config.branch}"
+            container('jnlp') {
+                sh 'skaffold run -vdebug -n test --tail'
+            }
         }
     }
 }

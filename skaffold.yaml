@@ -8,7 +8,7 @@ build:
         dockerfile: Dockerfile
   cluster:
     dockerConfig:
-      secretName: kaniko-registry-secret    
+      secretName: kaniko-registry-secret
     nodeSelector:
       type: virtual-kubelet
     tolerations:
@@ -16,6 +16,7 @@ build:
       operator: Equal
       value: alibabacloud
       effect: NoSchedule    
+    namespace: jenkins-agent 
   tagPolicy:
     gitCommit:
       prefix: test-

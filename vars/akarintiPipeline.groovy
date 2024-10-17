@@ -9,21 +9,27 @@ def call(Map config) {
 
     echo "Running AkarintiPipeline with config: ${config}"
 
-    // Checkout stage
-    script {
-        stage('Checkout') {
-            container('jnlp') {
-                checkout([$class: 'GitSCM', branches: [[name: "*/${config.branch}"]], userRemoteConfigs: [[url: "${config.repo}"]]])
+    pipeline {
+        agent {
+            kubernetes {
+                label 'eci-agent-skaffold'
             }
         }
-    }
-
-    // Build stage
-    script {
-        stage('Build') {
-            echo "Building project branch: ${config.branch}"
-            container('jnlp') {
-                sh 'skaffold run -vdebug -n test --tail'
+        stages {
+            stage('Checkout') {
+                steps {
+                    container('jnlp') {
+                        checkout([$class: 'GitSCM', branches: [[name: "*/${config.branch}"]], userRemoteConfigs: [[url: "${config.repo}"]]])
+                    }
+                }
+            }
+            stage('Build') {
+                steps {
+                    echo "Building project branch: ${config.branch}"
+                    container('jnlp') {
+                        sh 'skaffold run -vdebug -n test --tail'
+                    }
+                }
             }
         }
     }

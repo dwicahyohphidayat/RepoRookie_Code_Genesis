@@ -39,7 +39,7 @@ def call(Map config) {
                 }
                 steps {
                     script {
-                        def testHelper = new org.foo.TestHelper(this)
+                        def testHelper = new org.akarintitech.TestHelper(this)
                         testHelper.runUnitTests(config.tests.unit.framework)
                     }
                 }
@@ -51,7 +51,7 @@ def call(Map config) {
                 }
                 steps {
                     script {
-                        def testHelper = new org.foo.TestHelper(this)
+                        def testHelper = new org.akarintitech.TestHelper(this)
                         testHelper.runIntegrationTests(config.tests.integration.framework)
                     }
                 }

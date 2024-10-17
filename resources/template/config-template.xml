@@ -1,0 +1,7 @@
+<configuration>
+    <database>
+        <host>${DB_HOST}</host>
+        <port>${DB_PORT}</port>
+    </database>
+</configuration>
+

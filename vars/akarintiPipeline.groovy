@@ -10,6 +10,11 @@ def call(Map config) {
 
     echo "Running AkarintiPipeline with config: ${config}"
 
+    // Check for conflicting test configurations
+    if (config.tests?.unit?.enable == 'yes' && config.tests?.integration?.enable == 'yes') {
+        error "Both unit and integration tests cannot be enabled at the same time."
+    }
+
     pipeline {
         agent {
             kubernetes {
@@ -32,30 +37,24 @@ def call(Map config) {
                     }
                 }
             }
-            // Conditional Unit Test Stage
-            stage('Unit Test') {
+            stage('Test') {
                 when {
-                    expression { config.tests?.unit?.enabled == 'yes' }
+                    expression { config.tests?.unit?.enable == 'yes' || config.tests?.integration?.enable == 'yes' }
                 }
                 steps {
                     script {
                         def testHelper = new org.akarintitech.TestHelper(this)
-                        testHelper.runUnitTests(config.tests.unit.framework)
-                    }
-                }
-            }
-            // Conditional Integration Test Stage
-            stage('Integration Test') {
-                when {
-                    expression { config.tests?.integration?.enabled == 'yes' }
-                }
-                steps {
-                    script {
-                        def testHelper = new org.akarintitech.TestHelper(this)
-                        testHelper.runIntegrationTests(config.tests.integration.framework)
+                        if (config.tests?.unit?.enable == 'yes') {
+                            testHelper.runUnitTests(config.tests.unit.framework)
+                        } else if (config.tests?.integration?.enable == 'yes') {
+                            testHelper.runIntegrationTests(config.tests.integration.framework)
+                        } else {
+                            echo "No tests to run."
+                        }
                     }
                 }
             }
         }
     }
 }
+

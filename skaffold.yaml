@@ -10,9 +10,7 @@ build:
     dockerConfig:
       secretName: kaniko-registry-secret
     nodeSelector:
-      kubernetes.io/hostname:
-        - virtual-kubelet-ap-southeast-5a
-        - virtual-kubelet-ap-southeast-5b        
+      type: virtual-kubelet
     tolerations:
     - key: virtual-kubelet.io/provider
       operator: Equal

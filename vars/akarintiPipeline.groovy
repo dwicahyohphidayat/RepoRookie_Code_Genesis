@@ -35,7 +35,7 @@ def call(Map config) {
             // Conditional Unit Test Stage
             stage('Unit Test') {
                 when {
-                    expression { config.tests?.unit?.enable == 'yes' }
+                    expression { config.tests?.unit?.enabled == 'yes' }
                 }
                 steps {
                     script {
@@ -47,7 +47,7 @@ def call(Map config) {
             // Conditional Integration Test Stage
             stage('Integration Test') {
                 when {
-                    expression { config.tests?.integration?.enable == 'yes' }
+                    expression { config.tests?.integration?.enabled == 'yes' }
                 }
                 steps {
                     script {

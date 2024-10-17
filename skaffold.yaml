@@ -4,23 +4,25 @@ build:
   artifacts:
     - image: aitops/tools
       kaniko:
-        buildContext:
-          localDir: {}
         cache: {}        
         dockerfile: Dockerfile
-        logStreaming:
-          enabled: true
-        podTemplate: ./k8s/pod-template/kaniko.yaml
-  cluster: {}
+  cluster:
+    dockerConfig:
+      secretName: kaniko-registry-secret
+    nodeSelector:
+      kubernetes.io/hostname:
+        - virtual-kubelet-ap-southeast-5a
+        - virtual-kubelet-ap-southeast-5b        
+    tolerations:
+    - key: virtual-kubelet.io/provider
+      operator: Equal
+      value: alibabacloud
+      effect: NoSchedule    
   tagPolicy:
     gitCommit:
       prefix: test-
 deploy:
-  kubectl:
-    logPrefix: kubectl
-    logs:
-      - container: kaniko
-        driver: kubectl    
+  kubectl: {}
 manifests:
   rawYaml:
     - ./k8s/dev/*

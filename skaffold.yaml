@@ -8,6 +8,15 @@ build:
           localDir: {}
         cache: {}        
         dockerfile: Dockerfile
+        logStreaming:
+          enabled: true          
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "256Mi"          
+          limits:
+            cpu: "1000m"
+            memory: "1024Mi" 
   tagPolicy:
     gitCommit:
       prefix: test-

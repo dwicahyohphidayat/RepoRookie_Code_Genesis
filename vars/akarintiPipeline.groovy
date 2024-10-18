@@ -19,6 +19,7 @@ def call(Map config) {
     def repoUrl = env.GIT_URL // Retrieve the repository URL from Jenkins environment variables
     def branch = env.GIT_BRANCH // Retrieve the branch name from Jenkins environment variables
     def targetPort = 3000 // Example target port
+    def envinfra = 'envstg' // Example env infra
 
     pipeline {
         agent {

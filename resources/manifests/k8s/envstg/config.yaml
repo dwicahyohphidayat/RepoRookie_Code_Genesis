@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+data:
+  "key": "value"
+metadata:
+  name: ${AITPROJNAME}-config
+  labels:
+    app: ${AITGITCLIENT}
+    service: ${AITGITSERVICE}
+    ait.tech/${AITGITNAME}: ${AITGITBRANCH}

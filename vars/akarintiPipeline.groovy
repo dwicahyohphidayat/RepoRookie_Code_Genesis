@@ -15,6 +15,8 @@ def call(Map config) {
         error "Both unit and integration tests cannot be enabled at the same time."
     }
 
+    def namespace = 'test'
+
     pipeline {
         agent {
             kubernetes {
@@ -33,7 +35,7 @@ def call(Map config) {
                 steps {
                     echo "Building project branch: ${config.branch}"
                     container('jnlp') {
-                        sh 'skaffold run -vdebug -n test --tail'
+                        skaffold(namespace)
                     }
                 }
             }

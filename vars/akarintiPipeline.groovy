@@ -35,7 +35,7 @@ def call(Map config) {
                 steps {
                     echo "Building project branch: ${config.branch}"
                     container('jnlp') {
-                        skaffold(namespace)
+                        skaffold(namespace, 'envdev')
                     }
                 }
             }

@@ -18,10 +18,10 @@ def call(Map config) {
     def namespace = 'test'
     def envinfra = 'envstg' // Example env infra
     def targetPort = 3000 // Example target port
-//    def repoUrl = env.GIT_URL // Retrieve the repository URL from Jenkins environment variables
-//    def branch = env.GIT_BRANCH // Retrieve the branch name from Jenkins environment variables
-    def repoUrl = 'https://github.com/PT-Akar-Inti-Teknologi/exxon_microsite_backend.git' // Example repo URL
-    def branch = 'dev' // Example branch
+
+    // Check Jenkins environment variables first
+    def repoUrl = env.GIT_URL ?: config.repo
+    def branch = env.GIT_BRANCH ?: config.branch
 
     pipeline {
         agent {
@@ -33,13 +33,13 @@ def call(Map config) {
             stage('Checkout') {
                 steps {
                     container('jnlp') {
-                        checkout([$class: 'GitSCM', branches: [[name: "*/${config.branch}"]], userRemoteConfigs: [[url: "${config.repo}"]]])
+                        checkout([$class: 'GitSCM', branches: [[name: "*/${branch}"]], userRemoteConfigs: [[url: "${repoUrl}"]]])
                     }
                 }
             }
             stage('Build') {
                 steps {
-                    echo "Building project branch: ${config.branch}"
+                    echo "Building project: ${config}"
                     container('jnlp') {
                         skaffold(namespace, envinfra, repoUrl, branch, targetPort)
                     }

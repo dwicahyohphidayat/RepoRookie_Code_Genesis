@@ -1,0 +1,70 @@
+---
+apiVersion: v1
+data:
+  PORT: "3000"
+  FLASK_DEBUG: "0"
+  LOG_BODY_REQUEST: "true"
+  SERVICE1_URL: https://asia-east2-kfcjv-staging-3f3f4.cloudfunctions.net/gopayOrderFinishNotify
+  SERVICE2_URL: https://kfc-be.sandbait.work/v1/payment/webhook-handler/midtrans
+kind: ConfigMap
+metadata:
+  name: ait-tee-proxy-development-config-midtrans
+---
+apiVersion: v1
+data:
+  PORT: "4000"
+  FLASK_DEBUG: "0"
+  LOG_BODY_REQUEST: "true"
+  SERVICE1_URL: https://asia-east2-kfcjv-staging-3f3f4.cloudfunctions.net/goSendUpdateOrderStatus
+  SERVICE2_URL: https://kfc-be.sandbait.work/v1/orders/delivery/notification/gosend
+kind: ConfigMap
+metadata:
+  name: ait-tee-proxy-development-config-gosend
+---
+apiVersion: v1
+data:
+  PORT: "5000"
+  FLASK_DEBUG: "0"
+  LOG_BODY_REQUEST: "true"
+  SERVICE1_URL: ""
+  SERVICE2_URL: ""
+kind: ConfigMap
+metadata:
+  name: ait-tee-proxy-development-config-grabexpress
+---
+apiVersion: v1
+data:
+  PORT: "6000"
+  FLASK_DEBUG: "0"
+  LOG_BODY_REQUEST: "true"
+  SERVICE1_URL: ""
+  SERVICE2_URL: ""
+kind: ConfigMap
+metadata:
+  name: ait-tee-proxy-development-config-dana
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: filebeat-config
+data:
+  filebeat.yml: |
+    #logging.level: debug
+    filebeat.inputs:
+    - type: container
+      paths:
+        - /var/log/containers/${POD_NAME}_${POD_NAMESPACE}_ait-tee-proxy-development-*.log
+    processors:
+      - dissect:
+          tokenizer: "%{}_%{}_%{}-%{}-%{}-%{}-%{container.name}-%{}"
+          field: "log.file.path"
+          target_prefix: ""
+          #    processors:
+          #      - add_kubernetes_metadata:
+          #          in_cluster: true
+
+    output.elasticsearch:
+      hosts: ["http://kibana.sandbait.work:30054"]
+      username: "elastic"
+      password: "atria@AIT121218@gondosuli"
+      ssl.verification_mode: none

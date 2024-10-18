@@ -1,0 +1,129 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+  labels:
+    ait.tech/ait_tee_proxy: development
+    app: ait
+    service: tee_proxy--development
+  name: ait-tee-proxy-development-depl
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: ait
+      service: tee_proxy--development
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        co.elastic.logs.json-logging/json.add_error_key: "true"
+        co.elastic.logs.json-logging/json.keys_under_root: "true"
+        co.elastic.logs.json-logging/json.message_key: message
+        co.elastic.logs/enabled: "true"
+      creationTimestamp: null
+      labels:
+        app: ait
+        service: tee_proxy--development
+    spec:
+      containers:
+      - envFrom:
+        - configMapRef:
+            name: ait-tee-proxy-development-config-midtrans
+        image: aitops/tools
+        command: ["gunicorn", "-w", "2", "-b", "0.0.0.0:3000", "app:app"]
+        imagePullPolicy: IfNotPresent
+        name: ait-tee-proxy-development-midtrans
+        resources:
+          limits:
+            cpu: "1"
+            memory: 2Gi
+          requests:
+            cpu: 50m
+            memory: 100Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      - envFrom:
+        - configMapRef:
+            name: ait-tee-proxy-development-config-gosend
+        image: aitops/ait_tee_proxy:development-v0
+        command: ["gunicorn", "-w", "2", "-b", "0.0.0.0:4000", "app:app"]
+        imagePullPolicy: IfNotPresent
+        name: ait-tee-proxy-development-gosend
+        resources:
+          limits:
+            cpu: "1"
+            memory: 2Gi
+          requests:
+            cpu: 50m
+            memory: 100Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      - envFrom:
+        - configMapRef:
+            name: ait-tee-proxy-development-config-grabexpress
+        image: aitops/ait_tee_proxy:development-v0
+        command: ["gunicorn", "-w", "2", "-b", "0.0.0.0:5000", "app:app"]
+        imagePullPolicy: IfNotPresent
+        name: ait-tee-proxy-development-grabexpress
+        resources:
+          limits:
+            cpu: "1"
+            memory: 2Gi
+          requests:
+            cpu: 50m
+            memory: 100Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      - envFrom:
+        - configMapRef:
+            name: ait-tee-proxy-development-config-dana
+        image: aitops/ait_tee_proxy:development-v0
+        command: ["gunicorn", "-w", "2", "-b", "0.0.0.0:6000", "app:app"]
+        imagePullPolicy: IfNotPresent
+        name: ait-tee-proxy-development-dana
+        resources:
+          limits:
+            cpu: "1"
+            memory: 2Gi
+          requests:
+            cpu: 50m
+            memory: 100Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File        
+      - name: filebeat
+        image: docker.elastic.co/beats/filebeat:7.10.0
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        volumeMounts:
+        - name: config-volume
+          mountPath: /usr/share/filebeat/filebeat.yml
+          subPath: filebeat.yml
+        - name: varlogcontainers
+          mountPath: /var/log/containers
+        - name: varlogpods
+          mountPath: /var/log/pods
+      volumes:
+      - name: config-volume
+        configMap:
+          name: filebeat-config
+      - name: varlogcontainers
+        hostPath:
+          path: /var/log/containers
+          type: Directory          
+      - name: varlogpods
+        hostPath:
+          path: /var/log/pods
+          type: Directory
+      imagePullSecrets:
+      - name: ait-registry-secret

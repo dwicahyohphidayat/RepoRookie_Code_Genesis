@@ -2,7 +2,7 @@ apiVersion: skaffold/v4beta11
 kind: Config
 build:
   artifacts:
-    - image: aitops/tools
+    - image: aitops/${AITGITNAME}
       kaniko:
         cache: {}        
         dockerfile: Dockerfile
@@ -19,7 +19,7 @@ build:
     namespace: jenkins-agent 
   tagPolicy:
     gitCommit:
-      prefix: test-
+      prefix: ${AITGITBRANCH}-
 deploy:
   kubectl: {}
 manifests:

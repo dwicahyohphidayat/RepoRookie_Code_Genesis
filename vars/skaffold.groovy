@@ -3,7 +3,7 @@ def call(String namespace, String envinfra, String repoUrl, String branch, int t
     def variables = org.akarintitech.Preprocessor.preprocess(repoUrl, branch, targetPort)
 
     // Write the content of skaffold.yaml to a temporary file
-    def skaffoldYamlContent = libraryResource('manifests/skaffold.yaml')
+    def skaffoldYamlContent = org.akarintitech.Preprocessor.replaceVariables(libraryResource('manifests/skaffold.yaml'), variables)
     def tempSkaffoldFile = 'temp-skaffold.yaml'
     writeFile file: tempSkaffoldFile, text: skaffoldYamlContent
 

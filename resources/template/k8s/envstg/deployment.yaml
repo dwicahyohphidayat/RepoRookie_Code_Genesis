@@ -28,7 +28,7 @@ spec:
         co.elastic.logs.json-logging/json.message_key: "message"
         vault.hashicorp.com/agent-inject: 'true'
         vault.hashicorp.com/agent-configmap: 'vault-agent-config'
-        vault.hashicorp.com/agent-inject-secret-${AITPROJNAME}: 'kv/${AITPROJNAME}-config'
+        vault.hashicorp.com/agent-inject-secret-${AITPROJNAME}: 'akarintitech/${AITPROJNAME}'
     spec:
       serviceAccountName: ${AITPROJNAME}-sa
       imagePullSecrets:

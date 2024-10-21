@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: vault-agent-config
 data:
-  config.hcl: |
+  config-init.hcl: |
     auto_auth {
       method "kubernetes" {
         mount_path = "auth/kubernetes"

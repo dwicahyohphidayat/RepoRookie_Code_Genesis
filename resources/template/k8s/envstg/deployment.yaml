@@ -43,6 +43,3 @@ spec:
           limits:
             memory: "3Gi"
             cpu: "1000m"
-        envFrom:
-        - secretRef:
-            name: ${AITPROJNAME}-secret

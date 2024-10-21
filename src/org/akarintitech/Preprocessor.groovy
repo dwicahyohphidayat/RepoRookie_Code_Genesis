@@ -1,7 +1,7 @@
 package org.akarintitech
 
 class Preprocessor {
-    static Map<String, String> preprocess(String repoUrl, String branch, int targetPort) {
+    static Map<String, String> preprocess(String, namespace, String repoUrl, String branch, int targetPort) {
         def repoName = repoUrl.tokenize('/').last().replace('.git', '').replace('_', '-').toLowerCase()
         def firstWord = repoName.tokenize('-').first().toLowerCase()
         def remainingWords = repoName.tokenize('-').drop(1).join('-').toLowerCase()
@@ -12,7 +12,8 @@ class Preprocessor {
             AITGITSERVICE: remainingWords,
             AITGITNAME: repoName,
             AITGITBRANCH: branch.toLowerCase(),
-            AITTARGETPORT: targetPort.toString()
+            AITTARGETPORT: targetPort.toString(),
+            AITNAMESPACE: namespace.toLowerCase()
         ]
     
         return variables

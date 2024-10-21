@@ -12,22 +12,18 @@ def call(String namespace, String envinfra, String repoUrl, String branch, int t
     sh "mkdir -p ${k8sDir}"
 
     // Write the content of deployment.yaml, service.yaml, and config.yaml to temporary files in the k8s/${envinfra} directory
-    def deploymentYamlContent = org.akarintitech.Preprocessor.replaceVariables(libraryResource("manifests/k8s/${envinfra}/deployment.yaml"), variables)
-    def serviceYamlContent = org.akarintitech.Preprocessor.replaceVariables(libraryResource("manifests/k8s/${envinfra}/service.yaml"), variables)
-    def configYamlContent = org.akarintitech.Preprocessor.replaceVariables(libraryResource("manifests/k8s/${envinfra}/config.yaml"), variables)
+    def deploymentYamlContent = org.akarintitech.Preprocessor.replaceVariables(libraryResource("template/k8s/${envinfra}/deployment.yaml"), variables)
+    def serviceYamlContent = org.akarintitech.Preprocessor.replaceVariables(libraryResource("template/k8s/${envinfra}/service.yaml"), variables)
     def tempDeploymentFile = "${k8sDir}/temp-deployment.yaml"
     def tempServiceFile = "${k8sDir}/temp-service.yaml"
-    def tempConfigFile = "${k8sDir}/temp-config.yaml"
     writeFile file: tempDeploymentFile, text: deploymentYamlContent
     writeFile file: tempServiceFile, text: serviceYamlContent
-    writeFile file: tempConfigFile, text: configYamlContent
 
     try {
         // Run Skaffold using the temporary files
         sh "skaffold run -f ${tempSkaffoldFile} --namespace ${namespace}"
     } finally {
         // Ensure the temporary files are deleted
-        sh "rm -f ${tempSkaffoldFile} ${tempDeploymentFile} ${tempServiceFile} ${tempConfigFile}"
+        sh "rm -f ${tempSkaffoldFile} ${tempDeploymentFile} ${tempServiceFile}"
     }
 }
-

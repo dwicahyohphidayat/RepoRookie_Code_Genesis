@@ -26,6 +26,10 @@ spec:
         co.elastic.logs.json-logging/json.keys_under_root: "true"
         co.elastic.logs.json-logging/json.add_error_key: "true"
         co.elastic.logs.json-logging/json.message_key: "message"
+        vault.hashicorp.com/agent-inject: 'true'
+        vault.hashicorp.com/role: 'general-app-role'
+        vault.hashicorp.com/agent-configmap: 'vault-agent-config'
+        vault.hashicorp.com/agent-inject-secret-configmap: 'kv/${AITPROJNAME}-config' 
     spec:
       imagePullSecrets:
         - name: ait-registry-secret

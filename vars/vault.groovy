@@ -8,9 +8,9 @@ def call(String vaultPath, String initData) {
         def script = """
         #!/bin/bash
         export PATH=\$PATH:/usr/local/bin
-        vault kv get ${path}
+        vault kv get ${path} > /dev/null
         """
-        def result = sh(script: script, returnStatus: true, returnStdout: false)
+        def result = sh(script: script, returnStatus: true)
         return result == 0
     }
 
@@ -20,9 +20,9 @@ def call(String vaultPath, String initData) {
             def script = """
             #!/bin/bash
             export PATH=\$PATH:/usr/local/bin
-            vault kv put ${path} ${data}
+            vault kv put ${path} ${data} > /dev/null
             """
-            def result = sh(script: script, returnStatus: true, returnStdout: false)
+            def result = sh(script: script, returnStatus: true)
             if (result == 0) {
                 println "Data successfully written to ${path}"
             } else {

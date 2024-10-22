@@ -1,4 +1,9 @@
 def call(String vaultPath, String initData) {
+    println "Executing vault command"
+    println "PATH: ${System.getenv('PATH')}"
+    println "Vault Path: ${vaultPath}"
+    println "Init Data: ${initData}"
+
     // Function to check if the Vault path exists
     def pathExists = { path ->
         def process = "/usr/local/bin/vault kv get ${path}".execute()

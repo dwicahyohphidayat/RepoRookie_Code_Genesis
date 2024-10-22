@@ -27,3 +27,4 @@ def call(String vaultPath, String dockerfilePath) {
     
     // Write the updated content back to the Dockerfile
     writeFile(file: dockerfilePath, text: updatedDockerfileContent)
+}

@@ -30,7 +30,7 @@ def call(Map config) {
                 steps {
                     echo "Building project: ${config}"
                     container('jnlp') {
-                        skaffold(namespace, envinfra, repoUrl, branch, targetPort, skaffoldScheme, buildEnv, Dockerfile)
+                        skaffold(namespace, envinfra, repoUrl, branch, targetPort, skaffoldScheme, buildEnv, dockerfile)
                     }
                 }
             }

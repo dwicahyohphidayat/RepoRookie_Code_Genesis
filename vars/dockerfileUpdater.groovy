@@ -3,13 +3,13 @@
 def call(String vaultPath, String dockerfilePath) {
     // Retrieve and print the data in YAML format
     def yamlData = vaultUtils.getDataAsYaml(vaultPath)
-    println "Retrieved YAML Data:"
-    println yamlData
+//    println "Retrieved YAML Data:"
+//    println yamlData
 
     // Parse the YAML data
     def dataMap = vaultUtils.parseYaml(yamlData)
-    println "Parsed Data Map:"
-    println dataMap
+//    println "Parsed Data Map:"
+//    println dataMap
 
     // Extract the data section
     def envVars = dataMap.data.data
@@ -18,6 +18,9 @@ def call(String vaultPath, String dockerfilePath) {
     def dockerfileArgs = envVars.collect { key, value ->
         "ARG ${key}=\"${value}\"\nENV ${key}=\"${value}\""
     }.join("\n") + "\n"
+
+//    println "Dockerfile Arguments and Environment Variables:"
+//    println dockerfileArgs
 
     // Read the Dockerfile content
     def dockerfileContent = readFile(file: dockerfilePath)

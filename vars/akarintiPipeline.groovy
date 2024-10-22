@@ -1,27 +1,13 @@
 // vars/akarintiPipeline.groovy
 def call(Map config) {
-    // Validate required parameters
-    if (!config.branch) {
-        error "Parameter 'branch' is required"
-    }
-    if (!config.repo) {
-        error "Parameter 'repo' is required"
-    }
 
-    echo "Running AkarintiPipeline with config: ${config}"
+    config = org.akarintitech.ConfigValidator.validate(config, env)
 
-    // Check for conflicting test configurations
-    if (config.tests?.unit?.enable == 'yes' && config.tests?.integration?.enable == 'yes') {
-        error "Both unit and integration tests cannot be enabled at the same time."
-    }
-
-    def namespace = 'ait-internal-dev'
-    def envinfra = 'ait-internal-dev' // Example env infra
-    def targetPort = 3000 // Example target port
-
-    // Check Jenkins environment variables first
-    def repoUrl = env.GIT_URL ?: config.repo
-    def branch = env.GIT_BRANCH ?: config.branch
+    def namespace = config.namespace
+    def envinfra = config.envinfra
+    def targetPort = config.targetPort
+    def repoUrl = config.repoUrl
+    def branch = config.branch
 
     pipeline {
         agent {

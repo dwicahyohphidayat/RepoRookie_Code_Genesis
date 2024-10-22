@@ -1,4 +1,4 @@
-def call(String vaultPath, String data) {
+def call(String vaultPath, String initData) {
     // Function to check if the Vault path exists
     def pathExists = { path ->
         def process = "vault kv get ${path}".execute()
@@ -23,6 +23,5 @@ def call(String vaultPath, String data) {
     }
 
     // Execute the function
-    putDataIfNotExists(vaultPath, data)
-
+    putDataIfNotExists(vaultPath, initData)
 }

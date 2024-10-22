@@ -3,7 +3,7 @@ package org.akarintitech
 // ConfigValidator.groovy
 class ConfigValidator {
     static Map validateAndInitialize(Map config, def env) {
-        if (!targetPort) {
+        if (!config.targetPort) {
             error "The 'targetPort' parameter is required"
         }
         if (config.tests?.unit?.enable == 'yes' && config.tests?.integration?.enable == 'yes') {

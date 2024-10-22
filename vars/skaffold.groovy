@@ -5,7 +5,7 @@ def call(String namespace, String envinfra, String repoUrl, String branch, int t
     // Create vault path if not exists
     def vaultPath = "akarintitech/${variables.AITPROJNAME}"
     def initData = "TZ=Asia/Jakarta"
-    vault(vaultPath, initdata)
+    vault(vaultPath, initData)
 
     // Write the content of skaffold.yaml to a temporary file
     def skaffoldYamlContent = org.akarintitech.Preprocessor.replaceVariables(libraryResource('template/k8s/skaffold.yaml'), variables)

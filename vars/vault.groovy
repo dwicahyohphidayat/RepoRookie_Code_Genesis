@@ -1,7 +1,7 @@
 def call(String vaultPath, String initData) {
     // Function to check if the Vault path exists
     def pathExists = { path ->
-        def process = "vault kv get ${path}".execute()
+        def process = "/usr/local/bin/vault kv get ${path}".execute()
         process.waitFor()
         return process.exitValue() == 0
     }
@@ -9,7 +9,7 @@ def call(String vaultPath, String initData) {
     // Function to put data into Vault if the path does not exist
     def putDataIfNotExists = { path, data ->
         if (!pathExists(path)) {
-            def command = "vault kv put ${path} ${data}"
+            def command = "/usr/local/bin/vault kv put ${path} ${data}"
             def process = command.execute()
             process.waitFor()
             if (process.exitValue() == 0) {

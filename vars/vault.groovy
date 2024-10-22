@@ -3,6 +3,7 @@ def call(String vaultPath, String initData) {
     println "PATH: ${System.getenv('PATH')}"
     println "Vault Path: ${vaultPath}"
     println "Init Data: ${initData}"
+    sh "vault --version"
 
     // Function to check if the Vault path exists
     def pathExists = { path ->

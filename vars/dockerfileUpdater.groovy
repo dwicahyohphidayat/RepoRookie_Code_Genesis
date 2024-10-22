@@ -22,6 +22,10 @@ def call(String vaultPath, String dockerfilePath) {
     println "Dockerfile Arguments and Environment Variables:"
     println dockerfileArgs
 
+    println "DEBUG"
+    sh "ls -al ."
+    sh "pwd"
+
     // Insert the ARG and ENV lines into the Dockerfile
     def dockerfileContent = new File(dockerfilePath).text
     def updatedDockerfileContent = dockerfileContent.replaceFirst(/(?m)^FROM .+$/, "\$0\n${dockerfileArgs}")

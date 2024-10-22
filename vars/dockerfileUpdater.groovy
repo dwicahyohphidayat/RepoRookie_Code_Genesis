@@ -16,7 +16,7 @@ def call(String vaultPath, String dockerfilePath) {
 
     // Convert the data to ARG and ENV format, adding a new line at the end
     def dockerfileArgs = envVars.collect { key, value ->
-        "ARG ${key}=${value}\nENV ${key}=${value}"
+        "ARG ${key}=\"${value}\"\nENV ${key}=\"${value}\""
     }.join("\n") + "\n"
 
     // Read the Dockerfile content

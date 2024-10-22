@@ -1,7 +1,7 @@
 // vars/akarintiPipeline.groovy
 def call(Map config) {
 
-    config = org.akarintitech.ConfigValidator.validate(config, env)
+    config = org.akarintitech.ConfigValidator.validateAndInitialize(config, env)
 
     def namespace = config.namespace
     def envinfra = config.envinfra

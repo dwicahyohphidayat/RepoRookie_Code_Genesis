@@ -40,6 +40,12 @@ class ConfigValidator {
             error "Both 'env.GIT_BRANCH' and 'config.branch' are empty. One of them must be provided."
         }
 
+        def allowedBranchPattern = ~/^(dev|development|staging|main|master|aws-.*|alicloud-.*|azure-.*|gcp-.*)$/
+        
+        if (!branch.matches(allowedBranchPattern)) {
+            error "Branch '${branch}' is not allowed. Allowed branches are: dev, development, staging, main, master, aws-*, alicloud-*, azure-*, gcp-*."
+        }
+
         config.repoUrl = repoUrl
         config.branch = branch
 

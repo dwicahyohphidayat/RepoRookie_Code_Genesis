@@ -11,9 +11,22 @@ class ConfigValidator {
         }
 
         // Initialize default values
-        config.namespace = config.infra
-        config.envinfra = config.infra
         config.targetPort = config.targetPort ?: 3000
+        config.skaffold = config.skaffold ?: "pre-defined"
+        config.buildEnv = config.buildEnv ?: "no"
+        config.dockerfile = config.dockerfile ?: "Dockerfile"        
+
+        // validate config.buildEnv value
+        if (config.buildEnv != "yes" && config.buildEnv != "no") {
+           throw new IllegalArgumentException("Invalid value for config.buildEnv: ${config.buildEnv}. Allowed values are 'yes' or 'no'.")
+        }
+
+        // Define the allowed Skafold values
+        def allowedSkaffoldValues = ["user-defined", "pre-defined"]
+
+        if (!allowedSkaffoldValues.contains(config.skaffold)) {
+            error "Invalid 'config.skaffold' value. Must be one of: ${allowedSkaffoldValues.join(', ')}"
+        }
 
         // Validate env infra
         def validInfras = [
@@ -27,6 +40,9 @@ class ConfigValidator {
         if (!validInfras.contains(config.infra)) {
             error "Invalid 'config.infra' value. Must be one of: ${validInfras.join(', ')}"
         }
+        
+        config.namespace = config.infra
+        config.envinfra = config.infra
         
         // Validate repoUrl and branch
         def repoUrl = env.GIT_URL ?: config.repo

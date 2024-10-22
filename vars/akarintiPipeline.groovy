@@ -8,6 +8,9 @@ def call(Map config) {
     def targetPort = config.targetPort
     def repoUrl = config.repoUrl
     def branch = config.branch
+    def skaffoldScheme = config.skaffold
+    def dockerfile = config.dockerfile
+    def buildEnv = config.buildEnv
 
     pipeline {
         agent {
@@ -27,7 +30,7 @@ def call(Map config) {
                 steps {
                     echo "Building project: ${config}"
                     container('jnlp') {
-                        skaffold(namespace, envinfra, repoUrl, branch, targetPort)
+                        skaffold(namespace, envinfra, repoUrl, branch, targetPort, skaffoldScheme, buildEnv, Dockerfile)
                     }
                 }
             }

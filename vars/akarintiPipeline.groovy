@@ -15,8 +15,8 @@ def call(Map config) {
         error "Both unit and integration tests cannot be enabled at the same time."
     }
 
-    def namespace = 'test'
-    def envinfra = 'envstg' // Example env infra
+    def namespace = 'ait-internal-dev'
+    def envinfra = 'ait-internal-dev' // Example env infra
     def targetPort = 3000 // Example target port
 
     // Check Jenkins environment variables first

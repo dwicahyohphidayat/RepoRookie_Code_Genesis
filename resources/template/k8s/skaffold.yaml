@@ -24,4 +24,4 @@ deploy:
   kubectl: {}
 manifests:
   rawYaml:
-    - ./k8s/envstg/*
+    - ./k8s/${AITNAMESPACE}/*

@@ -17,7 +17,6 @@ def call(Map config) {
         agent {
             kubernetes {
                 label 'eci-jenkins-agent'
-                yaml libraryResource('template/pod/build.yaml')
             }
         }
         stages {

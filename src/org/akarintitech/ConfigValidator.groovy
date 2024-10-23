@@ -6,16 +6,21 @@ class ConfigValidator {
         if (!config.targetPort) {
             error "The 'targetPort' parameter is required"
         }
+
+        //validate Test Code
         if (config.tests?.unit?.enabled == 'yes' && config.tests?.integration?.enabled == 'yes') {
             error "Both unit and integration tests cannot be enabled at the same time."
+        } else if ((config.tests?.unit?.enabled == 'yes' || config.tests?.integration?.enabled == 'yes') && !config.testImage) {
+            error "Test image is required if any tests are enabled."
         }
-
+ 
         // Initialize default values
         config.targetPort = config.targetPort ?: 3000
         config.skaffold = config.skaffold ?: "pre-defined"
         config.buildEnv = config.buildEnv ?: "no"
         config.dockerfile = config.dockerfile ?: "Dockerfile"        
         config.sonarscan = config.sonarscan ?: "no"
+        config.testImage = config.testImage ?: "busybox"
 
         // validate config.sonarscan value
         if (config.sonarscan != "yes" && config.sonarscan != "no") {

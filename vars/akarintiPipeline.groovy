@@ -14,6 +14,7 @@ def call(Map config) {
     def testImage = config.testImage
 
     pipeline {
+        agent any
         stages {
             stage('Sonar Scan') {
                 when {

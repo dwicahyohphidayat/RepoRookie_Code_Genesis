@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    jenkins: agent
+spec:
+  tolerations:
+  - key: virtual-kubelet.io/provider
+    operator: Equal
+    value: alibabacloud
+    effect: NoSchedule
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/hostname
+            operator: In
+            values:
+            - virtual-kubelet-ap-southeast-5a
+            - virtual-kubelet-ap-southeast-5b
+  containers:
+  - name: jnlp
+    image: jenkins/inbound-agent:latest
+    args: ['$(JENKINS_SECRET)', '$(JENKINS_NAME)']
+    volumeMounts:
+    - name: workspace
+      mountPath: /workspace
+    resources:
+      requests:
+        cpu: "256m"
+        memory: "250Mi"
+      limits:
+        cpu: "512m"
+        memory: "500Mi"
+  volumes:
+  - name: workspace
+    emptyDir: {}          

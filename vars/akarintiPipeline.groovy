@@ -14,7 +14,12 @@ def call(Map config) {
     def testImage = config.testImage
 
     pipeline {
-        agent any
+        agent {
+            kubernetes {
+                label 'eci-jenkins-agent'
+                yaml libraryResource('template/pod/base.yaml')
+            }
+        }
         stages {
             stage('Sonar Scan') {
                 when {

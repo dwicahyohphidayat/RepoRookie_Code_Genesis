@@ -25,12 +25,12 @@ def call(Map config) {
                 when {
                     expression { config.sonarscan == 'yes' }
                 }
-                agent {
-                    kubernetes {
-                        label 'eci-jenkins-agent'
-                        yaml libraryResource('template/pod/sonarscanner.yaml').replace('${config.testImage}', testImage)
-                    }
-                }
+//                agent {
+//                    kubernetes {
+//                        label 'eci-jenkins-agent'
+//                        yaml libraryResource('template/pod/sonarscanner.yaml').replace('${config.testImage}', testImage)
+//                    }
+//                }
                 steps {
                     container('jnlp') {
                         checkout([$class: 'GitSCM', branches: [[name: "*/${branch}"]], userRemoteConfigs: [[url: "${repoUrl}"]]])

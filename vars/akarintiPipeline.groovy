@@ -4,11 +4,11 @@ def call(Map config) {
 pipeline {
     agent {
         kubernetes {
-            label 'eci-jenkins-agent'
             yaml """
             apiVersion: v1
             kind: Pod
             metadata:
+              namespace: jenkins-agent
               labels:
                 jenkins: agent
             spec:

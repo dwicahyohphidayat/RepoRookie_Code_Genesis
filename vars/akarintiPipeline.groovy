@@ -14,7 +14,6 @@ def call(Map config) {
             stage('Check Resource') {
                 steps {
                     script {
-                        def podTemplate = libraryResource('template/pod/build.yaml')
                         echo "Pod Template: ${podTemplate}"
                     }
                 }

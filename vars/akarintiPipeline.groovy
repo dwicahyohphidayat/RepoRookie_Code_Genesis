@@ -13,41 +13,48 @@ def call(Map config) {
     def buildEnv = config.buildEnv
 
     pipeline {
-        agent {
-            kubernetes {
-                label 'eci-agent-skaffold'
-            }
-        }
         stages {
-            stage('Checkout') {
+            stage('Sonar Scan') {
+                when {
+                    expression { config.sonarscan == 'yes' }
+                }
+                agent {
+                    kubernetes {
+                        label 'eci-agent-sonarscanner'
+                    }
+                }
                 steps {
                     container('jnlp') {
                         checkout([$class: 'GitSCM', branches: [[name: "*/${branch}"]], userRemoteConfigs: [[url: "${repoUrl}"]]])
+                        sonarscan(namespace, envinfra, repoUrl, branch, targetPort, skaffoldScheme, buildEnv, dockerfile)
                     }
-                }
-            }
-            stage('Build') {
-                steps {
-                    echo "Building project: ${config}"
-                    container('jnlp') {
-                        skaffold(namespace, envinfra, repoUrl, branch, targetPort, skaffoldScheme, buildEnv, dockerfile)
-                    }
-                }
-            }
-            stage('Test') {
-                when {
-                    expression { config.tests?.unit?.enable == 'yes' || config.tests?.integration?.enable == 'yes' }
-                }
-                steps {
                     script {
-                        def testHelper = new org.akarintitech.TestHelper(this)
-                        if (config.tests?.unit?.enable == 'yes') {
-                            testHelper.runUnitTests(config.tests.unit.framework)
-                        } else if (config.tests?.integration?.enable == 'yes') {
-                            testHelper.runIntegrationTests(config.tests.integration.framework)
-                        } else {
-                            echo "No tests to run."
+                        if (config.tests?.unit?.enabled == 'yes' || config.tests?.integration?.enabled == 'yes') {
+                            container('test') {
+                                def testHelper = new org.akarintitech.TestHelper(this)
+                                if (config.tests?.unit?.enable == 'yes') {
+                                    testHelper.runUnitTests(config.tests.unit.framework)
+                                } else if (config.tests?.integration?.enable == 'yes') {
+                                    testHelper.runIntegrationTests(config.tests.integration.framework)
+                                } else {
+                                    echo "No tests to run."
+                                }
+                            }
                         }
+                    }
+                }
+            }
+
+            stage('Build and Deploy') {
+                agent {
+                    kubernetes {
+                        label 'eci-agent-skaffold'
+                    }
+                }
+                steps {
+                    container('jnlp') {
+                        checkout([$class: 'GitSCM', branches: [[name: "*/${branch}"]], userRemoteConfigs: [[url: "${repoUrl}"]]])
+                        skaffold(namespace, envinfra, repoUrl, branch, targetPort, skaffoldScheme, buildEnv, dockerfile)
                     }
                 }
             }

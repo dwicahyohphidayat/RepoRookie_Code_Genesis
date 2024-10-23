@@ -5,7 +5,7 @@ build:
     - image: aitops/${AITGITNAME}
       kaniko:
         cache: {}        
-        dockerfile: Dockerfile
+        dockerfile: ${AITDOCKERFILE}
   cluster:
     dockerConfig:
       secretName: kaniko-registry-secret

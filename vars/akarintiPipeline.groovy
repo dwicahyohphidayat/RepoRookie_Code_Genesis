@@ -23,7 +23,7 @@ def call(Map config) {
                 agent {
                     kubernetes {
                         label 'eci-jenkins-agent'
-                        yaml libraryResource('template/pod/sonarscan.yaml').replace('${config.testImage}', testImage)
+                        yaml libraryResource('template/pod/sonarscanner.yaml').replace('${config.testImage}', testImage)
                     }
                 }
                 steps {
@@ -35,9 +35,9 @@ def call(Map config) {
                         if (config.tests?.unit?.enabled == 'yes' || config.tests?.integration?.enabled == 'yes') {
                             container('test') {
                                 def testHelper = new org.akarintitech.TestHelper(this)
-                                if (config.tests?.unit?.enable == 'yes') {
+                                if (config.tests?.unit?.enabled == 'yes') {
                                     testHelper.runUnitTests(config.tests.unit.framework)
-                                } else if (config.tests?.integration?.enable == 'yes') {
+                                } else if (config.tests?.integration?.enabled == 'yes') {
                                     testHelper.runIntegrationTests(config.tests.integration.framework)
                                 } else {
                                     echo "No tests to run."

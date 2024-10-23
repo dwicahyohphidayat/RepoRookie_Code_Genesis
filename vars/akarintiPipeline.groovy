@@ -1,22 +1,13 @@
 // vars/akarintiPipeline.groovy
 def call(Map config) {
 
-    config = org.akarintitech.ConfigValidator.validateAndInitialize(config, env)
+    def podTemplate = libraryResource('template/pod/build.yaml')    
 
-    def namespace = config.namespace
-    def envinfra = config.envinfra
-    def targetPort = config.targetPort
-    def repoUrl = config.repoUrl
-    def branch = config.branch
-    def skaffoldScheme = config.skaffold
-    def dockerfile = config.dockerfile
-    def buildEnv = config.buildEnv
-    def testImage = config.testImage
     pipeline {
         agent {
             kubernetes {
                 label 'eci-jenkins-agent'
-                yaml libraryResource('template/pod/build.yaml')
+                yaml podTemplate
             }
         }
         stages {

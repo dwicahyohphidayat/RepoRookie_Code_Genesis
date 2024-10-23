@@ -11,6 +11,7 @@ def call(Map config) {
     def skaffoldScheme = config.skaffold
     def dockerfile = config.dockerfile
     def buildEnv = config.buildEnv
+    def testImage = config.testImage
 
     pipeline {
         stages {
@@ -20,7 +21,8 @@ def call(Map config) {
                 }
                 agent {
                     kubernetes {
-                        label 'eci-agent-sonarscanner'
+                        label 'eci-jenkins-agent'
+                        yaml libraryResource('template/pod/sonarscan.yaml').replace('${config.testImage}', testImage)
                     }
                 }
                 steps {
@@ -48,7 +50,8 @@ def call(Map config) {
             stage('Build and Deploy') {
                 agent {
                     kubernetes {
-                        label 'eci-agent-skaffold'
+                        label 'eci-jenkins-agent'
+                        yaml libraryResource('template/pod/build.yaml')
                     }
                 }
                 steps {

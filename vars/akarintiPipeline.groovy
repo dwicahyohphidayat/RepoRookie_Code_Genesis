@@ -12,7 +12,6 @@ def call(Map config) {
     def dockerfile = config.dockerfile
     def buildEnv = config.buildEnv
     def testImage = config.testImage
-
     pipeline {
         agent {
             kubernetes {
@@ -21,47 +20,15 @@ def call(Map config) {
             }
         }
         stages {
-            stage('Sonar Scan') {
-                when {
-                    expression { config.sonarscan == 'yes' }
-                }
-//                agent {
-//                    kubernetes {
-//                        label 'eci-jenkins-agent'
-//                        yaml libraryResource('template/pod/sonarscanner.yaml').replace('${config.testImage}', testImage)
-//                    }
-//                }
+            stage('Check Resource') {
                 steps {
-                    container('jnlp') {
-                        checkout([$class: 'GitSCM', branches: [[name: "*/${branch}"]], userRemoteConfigs: [[url: "${repoUrl}"]]])
-                        sonarscan(namespace, envinfra, repoUrl, branch, targetPort, skaffoldScheme, buildEnv, dockerfile)
-                    }
                     script {
-                        if (config.tests?.unit?.enabled == 'yes' || config.tests?.integration?.enabled == 'yes') {
-                            container('test') {
-                                def testHelper = new org.akarintitech.TestHelper(this)
-                                if (config.tests?.unit?.enabled == 'yes') {
-                                    testHelper.runUnitTests(config.tests.unit.framework)
-                                } else if (config.tests?.integration?.enabled == 'yes') {
-                                    testHelper.runIntegrationTests(config.tests.integration.framework)
-                                } else {
-                                    echo "No tests to run."
-                                }
-                            }
-                        }
+                        def podTemplate = libraryResource('template/pod/build.yaml')
+                        echo "Pod Template: ${podTemplate}"
                     }
                 }
             }
-
-            stage('Build and Deploy') {
-                steps {
-                    container('jnlp') {
-                        checkout([$class: 'GitSCM', branches: [[name: "*/${branch}"]], userRemoteConfigs: [[url: "${repoUrl}"]]])
-                        skaffold(namespace, envinfra, repoUrl, branch, targetPort, skaffoldScheme, buildEnv, dockerfile)
-                    }
-                }
-            }
+            // Add your other stages here
         }
     }
 }
-

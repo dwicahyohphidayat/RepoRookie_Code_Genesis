@@ -17,7 +17,7 @@ def call(Map config) {
         agent {
             kubernetes {
                 label 'eci-jenkins-agent'
-                yaml libraryResource('template/pod/base.yaml')
+                yaml libraryResource('template/pod/build.yaml')
             }
         }
         stages {
@@ -54,12 +54,6 @@ def call(Map config) {
             }
 
             stage('Build and Deploy') {
-                agent {
-                    kubernetes {
-                        label 'eci-jenkins-agent'
-                        yaml libraryResource('template/pod/build.yaml')
-                    }
-                }
                 steps {
                     container('jnlp') {
                         checkout([$class: 'GitSCM', branches: [[name: "*/${branch}"]], userRemoteConfigs: [[url: "${repoUrl}"]]])

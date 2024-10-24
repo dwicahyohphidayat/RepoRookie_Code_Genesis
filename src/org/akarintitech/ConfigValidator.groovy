@@ -21,16 +21,16 @@ class ConfigValidator {
         }
 
         // Validate the test code
-        if (config.tests?.unit?.enabled == 'yes' && config.tests?.integration?.enabled == 'yes') {
+        if (config.sonarscan != 'yes' && (config.tests?.unit?.enabled == 'yes' || config.tests?.integration?.enabled == 'yes')) {
+            script.error "Unit or integration tests can only be enabled if SonarScan is enabled."
+        } else if (config.sonarscan == 'no' && config.testImage) {
+            script.error "Test image must be empty if SonarScan is not enabled."
+        } else if (config.tests?.unit?.enabled == 'yes' && config.tests?.integration?.enabled == 'yes') {
             script.error "Both unit and integration tests cannot be enabled at the same time."
         } else if ((config.tests?.unit?.enabled == 'yes' || config.tests?.integration?.enabled == 'yes') && !config.testImage) {
             script.error "Test image is required if any tests are enabled."
         } else if (config.tests?.integration?.enabled == 'yes' && !config.dbTestImage) {
             script.error "Database test image is required if integration tests are enabled."
-        } else if ((config.tests?.unit?.enabled == 'yes' || config.tests?.integration?.enabled == 'yes') && config.sonarscan != 'yes') {
-            script.error "Unit or integration tests can only be enabled if SonarScan is enabled."
-        } else if (config.sonarscan == 'no' && config.testImage) {
-            script.error "Test image must be empty if SonarScan is not enabled."
         }
 
         // validate config.buildEnv value

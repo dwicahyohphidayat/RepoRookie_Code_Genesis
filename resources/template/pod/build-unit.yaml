@@ -34,7 +34,7 @@ spec:
         secretKeyRef:
           name: hashicorp-secret
           key: vault-token
-    - name: SONAR_LOGIN
+    - name: SONAR_TOKEN
       valueFrom:
         secretKeyRef:
           name: sonarqube-secret

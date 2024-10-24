@@ -7,7 +7,8 @@ def call(Map config) {
     pipeline {
         agent {
             kubernetes {
-                yaml podTemplate 
+                yaml podTemplate
+                showRawYaml false 
             }
         }
         stages {
@@ -24,7 +25,7 @@ def call(Map config) {
                 }
                 steps {
                     container('jnlp') {
-                        sonarscan(namespace, envinfra, repoUrl, branch, targetPort, skaffoldScheme, buildEnv, dockerfile)
+                        sonarscan(config)
                     }
                     script {
                         if (config.tests?.unit?.enabled == 'yes' || config.tests?.integration?.enabled == 'yes') {
@@ -45,7 +46,7 @@ def call(Map config) {
             stage('Build and Deploy') {
                 steps {
                     container('jnlp') {
-                        skaffold(namespace, envinfra, repoUrl, branch, targetPort, skaffoldScheme, buildEnv, dockerfile)
+                        skaffold(config)
                     }
                 }
             }

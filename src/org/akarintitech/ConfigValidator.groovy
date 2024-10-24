@@ -2,10 +2,10 @@ package org.akarintitech
 
 // ConfigValidator.groovy
 class ConfigValidator {
-    static Map validateAndInitialize(Map config, def env) {
+    static Map validateAndInitialize(Map config, def script) {
         // Check port used by application
         if (!config.targetPort) {
-            error "The 'targetPort' parameter is required"
+            script.error "The 'targetPort' parameter is required"
         }
 
         // Initialize default values
@@ -22,13 +22,13 @@ class ConfigValidator {
 
         // Validate the test code
         if (config.tests?.unit?.enabled == 'yes' && config.tests?.integration?.enabled == 'yes') {
-            error "Both unit and integration tests cannot be enabled at the same time."
+            script.error "Both unit and integration tests cannot be enabled at the same time."
         } else if ((config.tests?.unit?.enabled == 'yes' || config.tests?.integration?.enabled == 'yes') && !config.testImage) {
-            error "Test image is required if any tests are enabled."
+            script.error "Test image is required if any tests are enabled."
         } else if (config.tests?.integration?.enabled == 'yes' && !config.dbTestImage) {
-            error "Database test image is required if integration tests are enabled."
+            script.error "Database test image is required if integration tests are enabled."
         } else if ((config.tests?.unit?.enabled == 'yes' || config.tests?.integration?.enabled == 'yes') && config.sonarscan != 'yes') {
-            error "Unit or integration tests can only be enabled if SonarScan is enabled."
+            script.error "Unit or integration tests can only be enabled if SonarScan is enabled."
         }
 
         // validate config.buildEnv value
@@ -40,7 +40,7 @@ class ConfigValidator {
         def allowedSkaffoldValues = ["user-defined", "pre-defined"]
 
         if (!allowedSkaffoldValues.contains(config.skaffold)) {
-            error "Invalid 'config.skaffold' value. Must be one of: ${allowedSkaffoldValues.join(', ')}"
+            script.error "Invalid 'config.skaffold' value. Must be one of: ${allowedSkaffoldValues.join(', ')}"
         }
 
         // Validate env infra
@@ -53,7 +53,7 @@ class ConfigValidator {
         ]
         
         if (!validInfras.contains(config.infra)) {
-            error "Invalid 'config.infra' value. Must be one of: ${validInfras.join(', ')}"
+            script.error "Invalid 'config.infra' value. Must be one of: ${validInfras.join(', ')}"
         }
         
         config.namespace = config.namespace ?: config.infra
@@ -64,17 +64,17 @@ class ConfigValidator {
         def branch = env.GIT_BRANCH ?: config.branch
 
         if (!repoUrl) {
-            error "Both 'env.GIT_URL' and 'config.repo' are empty. One of them must be provided."
+            script.error "Both 'env.GIT_URL' and 'config.repo' are empty. One of them must be provided."
         }
 
         if (!branch) {
-            error "Both 'env.GIT_BRANCH' and 'config.branch' are empty. One of them must be provided."
+            script.error "Both 'env.GIT_BRANCH' and 'config.branch' are empty. One of them must be provided."
         }
 
         def allowedBranchPattern = ~/^(dev|development|staging|main|master|aws-.*|alicloud-.*|azure-.*|gcp-.*)$/
         
         if (!branch.matches(allowedBranchPattern)) {
-            error "Branch '${branch}' is not allowed. Allowed branches are: dev, development, staging, main, master, aws-*, alicloud-*, azure-*, gcp-*."
+            script.error "Branch '${branch}' is not allowed. Allowed branches are: dev, development, staging, main, master, aws-*, alicloud-*, azure-*, gcp-*."
         }
 
         config.repoUrl = repoUrl

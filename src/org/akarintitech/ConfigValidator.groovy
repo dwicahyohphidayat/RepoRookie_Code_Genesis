@@ -3,15 +3,18 @@ package org.akarintitech
 // ConfigValidator.groovy
 class ConfigValidator {
     static Map validateAndInitialize(Map config, def env) {
+        // Check port used by application
         if (!config.targetPort) {
             error "The 'targetPort' parameter is required"
         }
 
-        //validate Test Code
+        // Validate the test code
         if (config.tests?.unit?.enabled == 'yes' && config.tests?.integration?.enabled == 'yes') {
             error "Both unit and integration tests cannot be enabled at the same time."
         } else if ((config.tests?.unit?.enabled == 'yes' || config.tests?.integration?.enabled == 'yes') && !config.testImage) {
             error "Test image is required if any tests are enabled."
+        } else if (config.tests?.integration?.enabled == 'yes' && !config.dbTestImage) {
+            error "Database test image is required if integration tests are enabled."
         }
  
         // Initialize default values
@@ -20,7 +23,6 @@ class ConfigValidator {
         config.buildEnv = config.buildEnv ?: "no"
         config.dockerfile = config.dockerfile ?: "Dockerfile"        
         config.sonarscan = config.sonarscan ?: "no"
-        config.testImage = config.testImage ?: "busybox"
 
         // validate config.sonarscan value
         if (config.sonarscan != "yes" && config.sonarscan != "no") {

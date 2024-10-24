@@ -1,4 +1,14 @@
-def call(String namespace, String envinfra, String repoUrl, String branch, int targetPort, String skaffold, String buildEnv, String dockerfile) {
+def call(Map config) {
+
+    def namespace = config.namespace
+    def envinfra = config.envinfra
+    def repoUrl = config.repoUrl
+    def branch = config.branch
+    def targetPort = config.targetPort
+    def skaffold = config.skaffold
+    def buildEnv = config.buildEnv
+    def dockerfile = config.dockerfile
+
     if (skaffold == "pre-defined") {
 
         // Preprocess variables
@@ -18,26 +28,18 @@ def call(String namespace, String envinfra, String repoUrl, String branch, int t
         def k8sDir = "k8s/${envinfra}"
         sh "mkdir -p ${k8sDir}"
 
-        // Write the content of skaffold.yaml to a temporary file
-        def skaffoldYamlContent = org.akarintitech.Preprocessor.replaceVariables(libraryResource('template/k8s/skaffold.yaml'), variables)
-        def tempSkaffoldFile = 'temp-skaffold.yaml'
-        writeFile file: tempSkaffoldFile, text: skaffoldYamlContent
-
-        // Write the content of deployment.yaml, service.yaml, and externalsecret.yaml to temporary files in the k8s/${envinfra} directory
-        def deploymentYamlContent = org.akarintitech.Preprocessor.replaceVariables(libraryResource("template/k8s/${envinfra}/deployment.yaml"), variables)
-        def serviceYamlContent = org.akarintitech.Preprocessor.replaceVariables(libraryResource("template/k8s/${envinfra}/service.yaml"), variables)
-        def externalsecretYamlContent = org.akarintitech.Preprocessor.replaceVariables(libraryResource("template/k8s/${envinfra}/externalsecret.yaml"), variables)
-        def tempDeploymentFile = "${k8sDir}/3temp-deployment.yaml"
-        def tempServiceFile = "${k8sDir}/2temp-service.yaml"
-        def tempExternalsecretFile = "${k8sDir}/1temp-externalsecret.yaml"
-        writeFile file: tempDeploymentFile, text: deploymentYamlContent
-        writeFile file: tempServiceFile, text: serviceYamlContent
-        writeFile file: tempExternalsecretFile, text: externalsecretYamlContent
-
-        // Write the content of secret.yaml to temporary files in the k8s/${envinfra} directory
-        def secretYamlContent = libraryResource("manifests/secret.yaml")
-        def tempSecretFile = "${k8sDir}/0temp-secret.yaml"
-        writeFile file: tempSecretFile, text: secretYamlContent
+        def filesToProcess = [
+            [path: 'template/k8s/skaffold.yaml', tempFile: 'temp-skaffold.yaml'],
+            [path: "template/k8s/${envinfra}/deployment.yaml", tempFile: "${k8sDir}/3temp-deployment.yaml"],
+            [path: "template/k8s/${envinfra}/service.yaml", tempFile: "${k8sDir}/2temp-service.yaml"],
+            [path: "template/k8s/${envinfra}/externalsecret.yaml", tempFile: "${k8sDir}/1temp-externalsecret.yaml"],
+            [path: 'manifests/secret.yaml', tempFile: "${k8sDir}/0temp-secret.yaml", preprocess: false]
+        ]
+    
+        filesToProcess.each { file ->
+            def content = file.preprocess == false ? libraryResource(file.path) : replaceAITVars(file.path, variables)
+            writeFile file: file.tempFile, text: content
+        }
 
         try {
             // Run Skaffold using the temporary files

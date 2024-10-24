@@ -29,6 +29,8 @@ class ConfigValidator {
             script.error "Database test image is required if integration tests are enabled."
         } else if ((config.tests?.unit?.enabled == 'yes' || config.tests?.integration?.enabled == 'yes') && config.sonarscan != 'yes') {
             script.error "Unit or integration tests can only be enabled if SonarScan is enabled."
+        } else if (config.sonarscan == 'no' && config.testImage) {
+            script.error "Test image must be empty if SonarScan is not enabled."
         }
 
         // validate config.buildEnv value

@@ -1,8 +1,8 @@
 // vars/akarintiPipeline.groovy
 def call(Map config) {
 
-    def script = this
-    config = org.akarintitech.ConfigValidator.validateAndInitialize(config, script)
+    def cfg = this
+    config = org.akarintitech.ConfigValidator.validateAndInitialize(config, cfg)
     def podTemplate = selectPodTemplate(config)
 
     pipeline {

@@ -17,7 +17,7 @@ class ConfigValidator {
 
         // validate config.sonarscan value
         if (config.sonarscan != "yes" && config.sonarscan != "no") {
-           throw new IllegalArgumentException("Invalid value for config.sonarscan: ${config.sonarscan}. Allowed values are 'yes' or 'no'.")
+           script.error "Invalid value for config.sonarscan: ${config.sonarscan}. Allowed values are 'yes' or 'no'."
         }
 
         // Validate the test code

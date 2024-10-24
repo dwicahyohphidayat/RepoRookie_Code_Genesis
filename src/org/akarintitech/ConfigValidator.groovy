@@ -8,15 +8,6 @@ class ConfigValidator {
             error "The 'targetPort' parameter is required"
         }
 
-        // Validate the test code
-        if (config.tests?.unit?.enabled == 'yes' && config.tests?.integration?.enabled == 'yes') {
-            error "Both unit and integration tests cannot be enabled at the same time."
-        } else if ((config.tests?.unit?.enabled == 'yes' || config.tests?.integration?.enabled == 'yes') && !config.testImage) {
-            error "Test image is required if any tests are enabled."
-        } else if (config.tests?.integration?.enabled == 'yes' && !config.dbTestImage) {
-            error "Database test image is required if integration tests are enabled."
-        }
- 
         // Initialize default values
         config.targetPort = config.targetPort ?: 3000
         config.skaffold = config.skaffold ?: "pre-defined"
@@ -27,6 +18,17 @@ class ConfigValidator {
         // validate config.sonarscan value
         if (config.sonarscan != "yes" && config.sonarscan != "no") {
            throw new IllegalArgumentException("Invalid value for config.sonarscan: ${config.sonarscan}. Allowed values are 'yes' or 'no'.")
+        }
+
+        // Validate the test code
+        if (config.tests?.unit?.enabled == 'yes' && config.tests?.integration?.enabled == 'yes') {
+            error "Both unit and integration tests cannot be enabled at the same time."
+        } else if ((config.tests?.unit?.enabled == 'yes' || config.tests?.integration?.enabled == 'yes') && !config.testImage) {
+            error "Test image is required if any tests are enabled."
+        } else if (config.tests?.integration?.enabled == 'yes' && !config.dbTestImage) {
+            error "Database test image is required if integration tests are enabled."
+        } else if ((config.tests?.unit?.enabled == 'yes' || config.tests?.integration?.enabled == 'yes') && config.sonarscan != 'yes') {
+            error "Unit or integration tests can only be enabled if SonarScan is enabled."
         }
 
         // validate config.buildEnv value

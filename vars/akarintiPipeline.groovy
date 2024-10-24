@@ -24,7 +24,7 @@ def call(Map config) {
                     expression { config.sonarscan == 'yes' }
                 }
                 steps {
-                    container('jnlp') {
+                    container('test') {
                         sonarscan(config)
                     }
                     script {

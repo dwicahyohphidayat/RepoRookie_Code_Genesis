@@ -27,6 +27,10 @@ spec:
     image: aitops/tools:skaffold-vault-sonar
     tty: true
     env:
+    - name: SONAR_SCANNER_OPTS
+      value: "-Dsonar.useEmbeddedJre=false"
+    - name: JAVA_HOME
+      value: "/usr/lib/jvm/java-17-openjdk"
     - name: KUBECONFIG
       value: /kubeconfig/kubeconfig
     - name: VAULT_TOKEN

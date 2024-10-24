@@ -28,12 +28,18 @@ def call(Map config) {
         def k8sDir = "k8s/${envinfra}"
         sh "mkdir -p ${k8sDir}"
 
+        def tempSkaffoldFile = 'temp-skaffold.yaml'
+        def tempDeploymentFile = "${k8sDir}/3temp-deployment.yaml"
+        def tempServiceFile = "${k8sDir}/2temp-service.yaml"
+        def tempExternalsecretFile = "${k8sDir}/1temp-externalsecret.yaml"
+        def tempSecretFile = "${k8sDir}/0temp-secret.yaml"
+    
         def filesToProcess = [
-            [path: 'template/k8s/skaffold.yaml', tempFile: 'temp-skaffold.yaml'],
-            [path: "template/k8s/${envinfra}/deployment.yaml", tempFile: "${k8sDir}/3temp-deployment.yaml"],
-            [path: "template/k8s/${envinfra}/service.yaml", tempFile: "${k8sDir}/2temp-service.yaml"],
-            [path: "template/k8s/${envinfra}/externalsecret.yaml", tempFile: "${k8sDir}/1temp-externalsecret.yaml"],
-            [path: 'manifests/secret.yaml', tempFile: "${k8sDir}/0temp-secret.yaml", preprocess: false]
+            [path: 'template/k8s/skaffold.yaml', tempFile: tempSkaffoldFile],
+            [path: "template/k8s/${envinfra}/deployment.yaml", tempFile: tempDeploymentFile],
+            [path: "template/k8s/${envinfra}/service.yaml", tempFile: tempServiceFile],
+            [path: "template/k8s/${envinfra}/externalsecret.yaml", tempFile: tempExternalsecretFile],
+            [path: 'manifests/secret.yaml', tempFile: tempSecretFile, preprocess: false]
         ]
     
         filesToProcess.each { file ->

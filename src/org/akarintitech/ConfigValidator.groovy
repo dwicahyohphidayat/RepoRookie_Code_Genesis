@@ -1,7 +1,7 @@
 package org.akarintitech
 
 class ConfigValidator {
-    static Map validateAndInitialize(Map config, def script) {
+    static Map validateAndInitialize(Map config, def env, def script) {
         // Check port used by application
         if (!config.targetPort) {
             script.error "The 'targetPort' parameter is required"
@@ -61,8 +61,8 @@ class ConfigValidator {
         config.envinfra = config.infra
 
         // Validate repoUrl and branch
-        def repoUrl = ${env.GIT_URL} ?: config.repo
-        def branch = ${env.GIT_BRANCH} ?: config.branch
+        def repoUrl = env.GIT_URL ?: config.repo
+        def branch = env.GIT_BRANCH ?: config.branch
 
         if (!repoUrl) {
             script.error "Both 'env.GIT_URL' and 'config.repo' are empty. One of them must be provided."

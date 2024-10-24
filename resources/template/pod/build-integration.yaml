@@ -34,13 +34,15 @@ spec:
         secretKeyRef:
           name: hashicorp-secret
           key: vault-token
-    - name: SONAR_TOKEN
+    - name: SONAR_LOGIN
       valueFrom:
         secretKeyRef:
           name: sonarqube-secret
           key: sonar-token
     - name: VAULT_ADDR
       value: http://vault.vault.svc.cluster.local:8200
+    - name: SONAR_HOST_URL
+      value: http://sonarqube-sonarqube.sonarqube.svc.cluster.local:9000
     volumeMounts:
     - name: workspace
       mountPath: /home/jenkins/agent/workspace 

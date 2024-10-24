@@ -24,7 +24,7 @@ spec:
   - name: docker-registry-secret
   containers:
   - name: jnlp
-    image: aitops/tools:skaffold-vault-sonar
+    image: aitops/tools:skaffold_vault_sonar
     tty: true
     env:
     - name: KUBECONFIG

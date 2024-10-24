@@ -60,8 +60,8 @@ class ConfigValidator {
         config.envinfra = config.infra
         
         // Validate repoUrl and branch
-        def repoUrl = env.GIT_URL ?: config.repo
-        def branch = env.GIT_BRANCH ?: config.branch
+        def repoUrl = ${env.GIT_URL} ?: config.repo
+        def branch = ${env.GIT_BRANCH} ?: config.branch
 
         if (!repoUrl) {
             script.error "Both 'env.GIT_URL' and 'config.repo' are empty. One of them must be provided."

@@ -33,7 +33,7 @@ def call(Map config) {
                         } else {
                             echo "No tests to run."
                         }
-                    
+                    }        
                 }
             }
             stage('Sonar Scan') {
@@ -59,4 +59,3 @@ def call(Map config) {
         }
     }
 }
-

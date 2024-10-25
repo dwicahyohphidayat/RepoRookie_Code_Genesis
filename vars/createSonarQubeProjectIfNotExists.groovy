@@ -4,7 +4,7 @@ import groovy.json.JsonSlurper
 def call(String projectName, String mainBranchName) {
     script {
         def sonarQubeUrl = env.SONAR_HOST_URL
-        def sonarQubeToken = env.SONAR_TOKEN
+        def sonarQubeToken = env.SONAR_TOKEN + ':'
         def sonarQubeApiUrl = "${sonarQubeUrl}/api/projects/search?projects=${projectName}"
         def projectExists = false
 

@@ -72,7 +72,7 @@ class ConfigValidator {
             script.error "Both 'env.GIT_BRANCH' and 'config.branch' are empty. One of them must be provided."
         }
 
-        def allowedBranchPattern = ~/^(dev|development|staging|main|master|aws-.*|alicloud-.*|azure-.*|gcp-.*)$/
+        def allowedBranchPattern = ~/^(dev|development|staging|main|master|aws-.*|alicloud-.*|azure-.*|gcp-.*|scan\/sonar)$/
 
         if (!branch.matches(allowedBranchPattern)) {
             script.error "Branch '${branch}' is not allowed. Allowed branches are: dev, development, staging, main, master, aws-*, alicloud-*, azure-*, gcp-*."
@@ -80,6 +80,12 @@ class ConfigValidator {
 
         config.repoUrl = repoUrl
         config.branch = branch
+        config.runbuild = "yes"
+       
+        if (config.branch == "scan/sonar") {
+            config.sonarscan = "yes"
+            config.runbuild = "no"
+        } 
 
         return config
     }

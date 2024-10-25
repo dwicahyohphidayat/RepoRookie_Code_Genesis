@@ -19,31 +19,37 @@ def call(Map config) {
                     }
                 }
             }
+            stage('Test') {
+                when {
+                    expression { config.sonarscan == 'yes' && (config.tests?.unit?.enabled == 'yes' || config.tests?.integration?.enabled == 'yes') } 
+                }
+                steps {
+                    container('test') {
+                        def testHelper = new org.akarintitech.TestHelper(this)
+                        if (config.tests?.unit?.enabled == 'yes') {
+                            testHelper.runUnitTests(config.tests.unit.framework)
+                        } else if (config.tests?.integration?.enabled == 'yes') {
+                            testHelper.runIntegrationTests(config.tests.integration.framework)
+                        } else {
+                            echo "No tests to run."
+                        }
+                    
+                }
+            }
             stage('Sonar Scan') {
                 when {
                     expression { config.sonarscan == 'yes' }
                 }
                 steps {
                     container('jnlp') {
-                        sonarscan(config)
-                    }
-                    script {
-                        if (config.tests?.unit?.enabled == 'yes' || config.tests?.integration?.enabled == 'yes') {
-                            container('test') {
-                                def testHelper = new org.akarintitech.TestHelper(this)
-                                if (config.tests?.unit?.enabled == 'yes') {
-                                    testHelper.runUnitTests(config.tests.unit.framework)
-                                } else if (config.tests?.integration?.enabled == 'yes') {
-                                    testHelper.runIntegrationTests(config.tests.integration.framework)
-                                } else {
-                                    echo "No tests to run."
-                                }
-                            }
-                        }
+                        sonarscan(config.repoUrl)
                     }
                 }
             }
             stage('Build and Deploy') {
+                when {
+                    expression { config.runbuild == 'yes' }
+                }
                 steps {
                     container('jnlp') {
                         skaffold(config)

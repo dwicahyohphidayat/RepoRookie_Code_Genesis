@@ -25,16 +25,7 @@ def call(Map config) {
                 }
                 steps {
                     container('test') {
-                        script {
-                            def testHelper = new org.akarintitech.TestHelper(this)
-                            if (config.tests?.unit?.enabled == 'yes') {
-                                testHelper.runUnitTests(config.tests.unit.framework)
-                            } else if (config.tests?.integration?.enabled == 'yes') {
-                                testHelper.runIntegrationTests(config.tests.integration.framework)
-                            } else {
-                                echo "No tests to run."
-                            }
-                        }
+                        codetest(config, this)
                     }        
                 }
             }

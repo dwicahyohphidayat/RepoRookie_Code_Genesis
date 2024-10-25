@@ -8,6 +8,11 @@ def call(String projectName, String mainBranchName) {
         def sonarQubeApiUrl = "${sonarQubeUrl}/api/projects/search?projects=${projectName}"
         def projectExists = false
 
+        // Ensure the HTTP Request plugin is available
+        if (!this.steps.httpRequest) {
+            error "HTTP Request plugin is not available. Please install the plugin."
+        }
+
         // Check if the project exists on SonarQube
         def response = httpRequest(
             url: sonarQubeApiUrl,
@@ -35,3 +40,4 @@ def call(String projectName, String mainBranchName) {
         }
     }
 }
+
